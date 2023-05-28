@@ -7,70 +7,66 @@ using namespace std;
 // } Driver Code Ends
 // User function Template for C++
 class Solution {
-  private:
-    void topoSort(int node, vector < pair < int, int >> adj[],
-      int vis[], stack < int > & st) {
-      //This is the function to implement Topological sort. 
-      vis[node] = 1;
-      for (auto it: adj[node]) {
-        int v = it.first;
-        if (!vis[v]) {
-          topoSort(v, adj, vis, st);
-        }
-      }
-      st.push(node);
-    }
   public:
-    vector < int > shortestPath(int N, int M, vector < vector < int >> & edges) {
-
-      //We create a graph first in the form of an adjacency list.
-      vector < pair < int, int >> adj[N];
-      for (int i = 0; i < M; i++) {
-        int u = edges[i][0];
-        int v = edges[i][1];
-        int wt = edges[i][2];
-        adj[u].push_back({v, wt}); 
-      }
-      // A visited array is created with initially 
-      // all the nodes marked as unvisited (0).
-      int vis[N] = {
-        0
-      };
-      //Now, we perform topo sort using DFS technique 
-      //and store the result in the stack st.
-      stack < int > st;
-      for (int i = 0; i < N; i++) {
-        if (!vis[i]) {
-          topoSort(i, adj, vis, st);
+  
+     void dfs(int i,int visited[],vector<pair<int,int>> adj[],stack<int> &stk){
+         
+         visited[i] = 1;
+         
+         for(auto it : adj[i]){
+             int current = it.first;
+             if(!visited[current]){
+                 dfs(current,visited,adj,stk);
+             }
+         }
+         stk.push(i);
+     }
+  
+     vector<int> shortestPath(int N,int M, vector<vector<int>>& edges){
+        
+        //first converting  graph into adjacency list
+        vector<pair<int,int>> adj[N];
+        
+        for(int i=0;i<M;i++){
+            int first = edges[i][0];
+            int second = edges[i][1];
+            int weight = edges[i][2];
+            adj[first].push_back({second,weight});
         }
-      }
-      //Further, we declare a vector ‘dist’ in which we update the value of the nodes’
-      //distance from the source vertex after relaxation of a particular node.
-
-      vector < int > dist(N);
-      for (int i = 0; i < N; i++) {
-        dist[i] = 1e9;
-      }
-
-      dist[0] = 0;
-      while (!st.empty()) {
-        int node = st.top();
-        st.pop();
-
-        for (auto it: adj[node]) {
-          int v = it.first;
-          int wt = it.second;
-
-          if (dist[node] + wt < dist[v]) {
-            dist[v] = wt + dist[node];
-          }
+        
+        //now simply calculating topo sort using dfs technique
+        int visited[N] = {0};
+        stack<int> stk;
+        for(int i=0;i<N;i++){
+            if(!visited[i]){
+                dfs(i,visited,adj,stk);
+            }
         }
-      }
-
-      for (int i = 0; i < N; i++) {
-        if (dist[i] == 1e9) dist[i] = -1;
-      }
-      return dist;
+        
+        vector<int> dist(N,1e9);
+        dist[0] = 0;
+        //removing those nodes which are above source node which is 0 because they will be unreachable
+        for (int i = 0; i < N; i++) {
+            if(stk.top() !=  0){
+                int node = stk.top();
+                dist[node] = -1;
+                stk.pop();
+            }
+            else break;
+        }
+        
+        //remove elements from the stack and check if the distance using that node reaching its adjacent node could be reduced
+        while(!stk.empty()){
+            int ele = stk.top();
+            stk.pop();
+            
+            for(auto it: adj[ele]){
+                if(dist[ele] + it.second < dist[it.first]){
+                    dist[it.first] = dist[ele] + it.second;
+                }
+            }
+        }
+        return dist;
     }
 };
 
