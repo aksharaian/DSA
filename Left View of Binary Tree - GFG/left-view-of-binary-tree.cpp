@@ -112,22 +112,6 @@ int main() {
 // } Driver Code Ends
 
 
-/* A binary tree node
-
-struct Node
-{
-    int data;
-    struct Node* left;
-    struct Node* right;
-    
-    Node(int x){
-        data = x;
-        left = right = NULL;
-    }
-};
- */
-
-//Function to return a list containing elements of left view of the binary tree.
 void solve(Node* root, vector<int> &ans, int level){
     //base case
     if(root== NULL)
