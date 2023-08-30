@@ -10,24 +10,22 @@ using namespace std;
 class Solution{
 public:
    
-   void helper(vector<int>& res ,int N, int present, bool inc){
-       res.push_back(present);
-       
-       if(inc){
-           if(present == N)
-              return;
-           else helper(res, N, present + 5, true);
-       }else {
-           if(present - 5> 0) helper(res, N, present-5, false);
-       else helper(res, N, present -5, true);
-       
-       }
+   void helper(vector<int>& res , int present){
+      
+      if(present <= 0){
+          res.push_back(present);
+          return;
+      }
+      res.push_back(present);
+      helper(res, present - 5);
+      res.push_back(present);
+    
    }
     
     vector<int> pattern(int N){
         
      vector<int>res;
-     helper(res, N, N, false);
+     helper(res, N);
      return res;
      
     }
