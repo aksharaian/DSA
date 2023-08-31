@@ -10,25 +10,25 @@ class Solution{
     // arr: input array
     // N: size of array
     // K: element to be searche
+    
+    int helper(int arr[], int N, int K, int l, int h){
+        while(l>h) return -1;
+        
+        int mid= (l+h)/2;
+        if(arr[mid] > K){
+            helper(arr, N, K, l, mid-1);
+        }else if(arr[mid] < K){
+            helper(arr, N, K, mid+1, h);
+        }else{
+            return 1;
+        }
+        
+    }
+    
     int searchInSorted(int arr[], int N, int K) 
     { 
-    
-       int l=0, h = N-1;
-       
-       while(l<=h){
-           int mid = (l+h)/2;
-           if(arr[mid] > K){
-               h = mid -1;
-               
-           }else if(arr[mid] < K){
-               l= mid+1;
-               
-           }else{
-               return 1; //found the elm
-           }
-           
-       }
-       return -1; //elm not exist
+    return helper(arr, N, K , 0, N-1);
+                             //l h values
        
     }
 };
