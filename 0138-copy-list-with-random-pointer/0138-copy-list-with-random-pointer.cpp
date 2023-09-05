@@ -17,49 +17,37 @@ public:
 class Solution {
 public:
     Node* copyRandomList(Node* head) {
-         Node *iter = head; 
-          Node *front = head;
 
-          // First round: make copy of each node,
-          // and link them together side-by-side in a single list.
-          while (iter != NULL) {
-            front = iter->next;
+         if(head == NULL){
+             return NULL;
+         }
 
-            Node *copy = new Node(iter->val);
-            iter->next = copy;
-            copy->next = front;
+          Node *cur = head;
+          Node *temp;
+         //step creating
+          while(cur){
+             temp = cur->next;
+             cur->next = new Node(cur->val);
+             cur->next->next = temp;
+             cur = temp;
+          }
+ 
+          temp = head;
 
-            iter = front;
+          while(temp){
+              temp->next->random = temp->random ? temp->random->next : NULL;   
+              temp = temp->next->next;
           }
 
-          // Second round: assign random pointers for the copy nodes.
-          iter = head;
-          while (iter != NULL) {
-            if (iter->random != NULL) {
-              iter->next->random = iter->random->next;
-            }
-            iter = iter->next->next;
+         temp = head;
+         Node* cpy = temp->next;
+         Node* store = cpy;
+          while(temp and cpy){
+             temp->next = temp->next->next;
+             cpy->next = cpy->next ? cpy->next->next : NULL;
+             temp = temp->next;
+             cpy = cpy->next;
           }
-
-          // Third round: restore the original list, and extract the copy list.
-          iter = head;
-          Node *pseudoHead = new Node(0);
-          Node *copy = pseudoHead;
-
-          while (iter != NULL) {
-            front = iter->next->next;
-
-            // extract the copy
-            copy->next = iter->next;
-
-            // restore the original list
-            iter->next = front;
-              
-            copy = copy -> next; 
-            iter = front;
-          }
-
-          return pseudoHead->next;
+      return store;
     }
-    
 };
